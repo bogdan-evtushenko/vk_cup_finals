@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">VKProducts</string>
+    <integer name="com_vk_sdk_AppId">7325353</integer>
+
+    <string name="rename">Rename</string>
+    <string name="renaming_document">Renaming document</string>
+    <string name="delete">Delete</string>
+    <string name="documents">Documents</string>
+    <string name="apply">Apply</string>
+    <string name="renamed">Document successfully renamed!</string>
+    <string name="something_went_wrong">Something went wrong :( Try again.</string>
+    <string name="you_do_not_have_the_appropriate_application">You do not have the right application to open this file</string>
+
+    <string name="try_to_restart_application">Try to restart application</string>
+    <string name="restart_app_and_login">Restart application and login with success</string>
+    <string name="city">City</string>
+</resources>

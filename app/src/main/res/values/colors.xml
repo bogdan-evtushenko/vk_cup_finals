@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#4986CC</color>
+    <color name="colorPrimaryDark">#4986CC</color>
+    <color name="colorAccent">#FFFFFF</color>
+    <color name="sushi">#8BC34A</color>
+
+    <color name="mine_shaft">#000000</color>
+    <color name="bright_black">#5D5F61</color>
+    <color name="dull_gray">#A5B2B5</color>
+    <color name="dove_gray">#666666</color>
+    <color name="silver">#BBBBBB</color>
+    <color name="gray">#F0F2F3</color>
+    <color name="white">#FFFFFF</color>
+</resources>
