@@ -8,7 +8,7 @@ data class Group(
     val name: String,
     val isClosed: Int,
     val photoUrl: String
-) : Serializable {
+) {
     companion object {
         fun parse(group: JSONObject): Group {
             return Group(

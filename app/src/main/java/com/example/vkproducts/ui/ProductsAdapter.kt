@@ -38,9 +38,7 @@ class ProductsAdapter(
 
             tvTitle.text = product.title
 
-            val df = DecimalFormat("###.#")
-            tvSubTitle.text = "${df.format((product.amount.toDouble() / 100.toDouble()))} ${product.currency}"
-
+            tvSubTitle.text = product.costInString
             onClickListener = { itemClickListener(product) }
         }
     }

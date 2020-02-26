@@ -3,6 +3,7 @@ package com.example.vkproducts.logic
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.Serializable
+import java.text.DecimalFormat
 
 data class Product(
     val id: Int,
@@ -13,6 +14,13 @@ data class Product(
     val isFavorite: Boolean,
     val photoUrl: String
 ) : Serializable {
+
+    val costInString: String
+        get() {
+            val df = DecimalFormat("###.#")
+            return "${df.format((amount.toDouble() / 100.toDouble()))} $currency"
+        }
+
     companion object {
         fun parse(product: JSONObject): Product {
             return Product(

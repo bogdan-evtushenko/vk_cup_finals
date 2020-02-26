@@ -110,8 +110,7 @@ class MarketActivity : AppCompatActivity() {
     }
 
     private fun adjustClickingOnProduct(product: Product) {
-        println("Clicking on product : $product")
-
+        startActivity(ProductActivity.newIntent(this, product))
     }
 
     override fun onSupportNavigateUp(): Boolean {

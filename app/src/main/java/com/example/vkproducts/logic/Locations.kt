@@ -6,7 +6,7 @@ import java.io.Serializable
 data class Country(
     val id: Int,
     val title: String
-) : Serializable {
+) {
     companion object {
         fun parse(country: JSONObject): Country {
             return Country(
@@ -20,7 +20,7 @@ data class Country(
 data class City(
     val id: Int,
     val title: String
-) : Serializable {
+) {
     companion object {
         fun parse(city: JSONObject): City {
             return City(

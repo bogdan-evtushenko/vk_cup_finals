@@ -33,7 +33,7 @@ class MarketsAdapter(
         with(holder) {
             Glide.with(itemView)
                 .load(group.photoUrl)
-                .apply(RequestOptions.circleCropTransform())
+                .apply(RequestOptions().centerCrop())
                 .into(imageView)
 
             tvTitle.text = group.name
