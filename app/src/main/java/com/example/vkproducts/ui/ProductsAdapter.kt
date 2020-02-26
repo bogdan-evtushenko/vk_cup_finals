@@ -37,9 +37,9 @@ class ProductsAdapter(
                 .into(imageView)
 
             tvTitle.text = product.title
-            val df = DecimalFormat("###.#")
 
-            tvSubTitle.text = "${df.format((product.amount.toDouble() / 1000.toDouble()))} ${product.currency}"
+            val df = DecimalFormat("###.#")
+            tvSubTitle.text = "${df.format((product.amount.toDouble() / 100.toDouble()))} ${product.currency}"
 
             onClickListener = { itemClickListener(product) }
         }

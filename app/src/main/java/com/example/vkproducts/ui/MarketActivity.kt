@@ -3,11 +3,11 @@ package com.example.vkproducts.ui
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.widget.GridLayout
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.vkproducts.R
 import com.example.vkproducts.logic.Product
 import com.example.vkproducts.logic.VKRequests
@@ -48,12 +48,13 @@ class MarketActivity : AppCompatActivity() {
         fetchProducts()
     }
 
-    private fun fetchProducts(offset: Int = 0) {
+    private fun fetchProducts() {
         progressBarDialog.show()
         println("here owner_id : $marketId")
         VK.execute(VKRequests.FetchProducts(marketId), object : VKApiCallback<Pair<Int, List<Product>>> {
             override fun success(result: Pair<Int, List<Product>>) {
                 products.addAll(result.second)
+                configureLoadMore(result.first)
                 showProducts()
             }
 
@@ -65,27 +66,52 @@ class MarketActivity : AppCompatActivity() {
         })
     }
 
+    private fun configureLoadMore(maxCount: Int) {
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                if (dy > 0) {
+                    val visibleThreshold = 2
+                    val gridLayoutManager = recyclerView.layoutManager as GridLayoutManager
+                    val lastItem = gridLayoutManager.findLastCompletelyVisibleItemPosition()
+                    val currentTotalCount = gridLayoutManager.itemCount
+                    if (currentTotalCount <= lastItem + visibleThreshold) {
+                        if (currentTotalCount < maxCount) {
+                            spinner.visibility = View.VISIBLE
+                            fetchProductsWithOffset(currentTotalCount)
+                        }
+                    }
+                }
+            }
+        })
+    }
+
+    private fun fetchProductsWithOffset(offset: Int) {
+        VK.execute(VKRequests.FetchProducts(marketId, offset), object : VKApiCallback<Pair<Int, List<Product>>> {
+            override fun success(result: Pair<Int, List<Product>>) {
+                products.addAll(result.second)
+                recyclerView.adapter?.notifyItemRangeInserted(
+                    products.size - result.second.size,
+                    result.second.size
+                )
+                spinner.visibility = View.GONE
+            }
+
+            override fun fail(error: VKApiExecutionException) {
+                println("error in spinner : ${error.message}")
+                showToast(error.message.orEmpty())
+            }
+        })
+    }
+
     private fun showProducts() {
         progressBarDialog.dismiss()
-        println("Here products : $products")
         recyclerView.adapter = productsAdapter
         if (products.isEmpty()) showToast(getString(R.string.nothing_found))
     }
 
     private fun adjustClickingOnProduct(product: Product) {
         println("Clicking on product : $product")
-        /*when (adapterMode) {
-            AdapterMode.STANDARD -> startActivity(PhotoActivity.newIntent(this, photo.photoUrl))
-            AdapterMode.REMOVING -> {
-                if (photo.isSelected) {
-                    removingPhotos.add(photo)
-                } else {
-                    photo.isSelected = true
-                    removingPhotos.remove(photo)
-                    photo.isSelected = false
-                }
-            }
-        }*/
+
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -103,8 +129,5 @@ class MarketActivity : AppCompatActivity() {
                     this.marketTitle = marketTitle
                 })
             }
-
-        const val REQUEST_PICK_IMAGE = 1
-        const val REQUEST_PERMISSION = 2
     }
 }

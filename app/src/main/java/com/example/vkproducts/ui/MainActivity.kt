@@ -117,7 +117,6 @@ class MainActivity : AppCompatActivity() {
     private fun showCities() {
         progressBarDialog.dismiss()
         println("Here size ${citiesListItems.size}")
-        // citiesListItems.forEach { println(it) }
         currentSelectingItem = citiesListItems[1]
         updatePageTitle()
         showBottomSheetDialog()
@@ -125,9 +124,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun showBottomSheetDialog() {
         val bottomSheet = CitiesBottomSheetDialog(::fetchMarkets, citiesListItems, currentSelectingItem)
-        bottomSheet.show(
-            supportFragmentManager, "shareBottomSheet"
-        )
+        bottomSheet.show(supportFragmentManager, "shareBottomSheet")
     }
 
     private fun fetchMarkets(cityItem: CitiesListItem) {

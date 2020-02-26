@@ -5,62 +5,6 @@ import org.json.JSONObject
 import java.lang.IllegalStateException
 
 object VKRequests {
-
-    class FetchCategories :
-        VKRequest<List<Product>>("groups.getCatalogInfo") {
-        init {
-            addParam("access_token", user?.accessToken)
-            addParam("v", "5.103")
-        }
-
-        override fun parse(r: JSONObject): List<Product> {
-            val response = r.getJSONObject("response")
-            val categories = response.getJSONArray("categories")
-            val result = ArrayList<Product>()
-
-            for (i in 0 until categories.length()) {
-                result.add(Product.parse(categories.getJSONObject(i)))
-            }
-
-            return result
-        }
-    }
-
-    class FetchCategory(categoryId: Int) :
-        VKRequest<List<Store>>("groups.getCatalog") {
-        init {
-            addParam("v", "5.103")
-            addParam("access_token", user?.accessToken)
-            addParam("category_id", categoryId)
-        }
-
-        override fun parse(r: JSONObject): List<Store> {
-            val response = r.getJSONObject("response")
-            val stores = response.getJSONArray("items")
-            val result = ArrayList<Store>()
-
-            for (i in 0 until stores.length()) {
-                result.add(Store.parse(stores.getJSONObject(i)))
-            }
-
-            return result
-        }
-    }
-
-    class DeleteDocument(documentId: Int) :
-        VKRequest<Boolean>("docs.delete") {
-        init {
-            addParam("doc_id", documentId)
-            addParam("v", "5.103")
-            addParam("owner_id", user?.userId ?: throw IllegalStateException())
-            addParam("access_token", user?.accessToken)
-        }
-
-        override fun parse(r: JSONObject): Boolean {
-            return (r.getInt("response") == 1)
-        }
-    }
-
     class FetchCountries :
         VKRequest<List<Country>>("database.getCountries") {
         init {
@@ -128,11 +72,12 @@ object VKRequests {
         }
     }
 
-    class FetchProducts(marketId: Int) :
+    class FetchProducts(marketId: Int, offset: Int = 0) :
         VKRequest<Pair<Int, List<Product>>>("market.get") {
         init {
             addParam("owner_id", "-$marketId")
             addParam("count", 200)
+            addParam("offer", offset)
             addParam("extended", 1)
             addParam("access_token", user?.accessToken)
             addParam("v", "5.103")
