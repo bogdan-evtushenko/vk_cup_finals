@@ -103,4 +103,28 @@ object VKRequests {
             return result
         }
     }
+
+    class SearchGroupsByCity(cityId: Int) :
+        VKRequest<List<Group>>("groups.search") {
+        init {
+            addParam("q", "*")
+            addParam("city_id", cityId)
+            addParam("sort", 2)
+            addParam("count", 1000)
+            addParam("market", 1)
+            addParam("access_token", user?.accessToken)
+            addParam("v", "5.103")
+        }
+
+        override fun parse(r: JSONObject): List<Group> {
+            val response = r.getJSONObject("response")
+            val groups = response.getJSONArray("items")
+            val result = ArrayList<Group>()
+
+            for (i in 0 until groups.length()) {
+                result.add(Group.parse(groups.getJSONObject(i)))
+            }
+            return result
+        }
+    }
 }

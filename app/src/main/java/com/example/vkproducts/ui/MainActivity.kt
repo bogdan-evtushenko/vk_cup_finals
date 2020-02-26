@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.vkproducts.R
 import com.example.vkproducts.logic.*
 import com.vk.api.sdk.VK
@@ -19,6 +20,9 @@ class MainActivity : AppCompatActivity() {
     private val progressBarDialog by lazy { ProgressBarDialog(this) }
     private val citiesListItems = mutableListOf<CitiesListItem>()
     private lateinit var currentSelectingItem: CitiesListItem
+    private val markets: MutableList<Group> = mutableListOf()
+
+    private val marketsAdapter by lazy { MarketsAdapter(this, ::adjustClickingOnGroup) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,6 +33,16 @@ class MainActivity : AppCompatActivity() {
             VK.login(this, arrayListOf(VKScope.WALL, VKScope.PHOTOS))
         } else {
             fetchCountries()
+        }
+
+        initViews()
+    }
+
+    private fun initViews() {
+        titleContainer.setOnClickListener { showBottomSheetDialog() }
+        recyclerView.run {
+            layoutManager = LinearLayoutManager(this@MainActivity, LinearLayoutManager.VERTICAL, false)
+            adapter = marketsAdapter
         }
     }
 
@@ -87,7 +101,6 @@ class MainActivity : AppCompatActivity() {
 
             VK.execute(VKRequests.FetchCities(country.id), object : VKApiCallback<List<City>> {
                 override fun success(result: List<City>) {
-                    progressBarDialog.dismiss()
                     citiesListItems.add(CitiesListItem(country.id, country.title, true))
                     result.forEach { citiesListItems.add(CitiesListItem(it.id, it.title, false)) }
                     fetchCities(countries, indexCountry + 1)
@@ -104,19 +117,58 @@ class MainActivity : AppCompatActivity() {
     private fun showCities() {
         progressBarDialog.dismiss()
         println("Here size ${citiesListItems.size}")
-        citiesListItems.forEach { println(it) }
+        // citiesListItems.forEach { println(it) }
         currentSelectingItem = citiesListItems[1]
+        updatePageTitle()
+        showBottomSheetDialog()
+    }
 
-        val bottomSheet = ShareBottomSheetDialog(::showMarket, citiesListItems, currentSelectingItem)
-
+    private fun showBottomSheetDialog() {
+        val bottomSheet = ShareBottomSheetDialog(::fetchMarkets, citiesListItems, currentSelectingItem)
         bottomSheet.show(
             supportFragmentManager, "shareBottomSheet"
         )
-
     }
 
-    private fun showMarket(cityItem: CitiesListItem) {
+    private fun fetchMarkets(cityItem: CitiesListItem) {
         currentSelectingItem = cityItem
-        // uploadMarket()
+        // println("Here cityItem : $cityItem")
+        updatePageTitle()
+        markets.clear()
+        uploadMarkets(cityItem.id)
+    }
+
+    private fun uploadMarkets(cityId: Int) {
+        progressBarDialog.show()
+        uploadMarketOneByOne(cityId)
+    }
+
+    private fun uploadMarketOneByOne(cityId: Int) {
+        println("Upload market one by one")
+        VK.execute(VKRequests.SearchGroupsByCity(cityId), object : VKApiCallback<List<Group>> {
+            override fun success(result: List<Group>) {
+                //println("Here result groups : $result")
+                markets.addAll(result)
+                showMarkets()
+            }
+
+            override fun fail(error: VKApiExecutionException) {
+                println("here error in groups : ${error.message}")
+            }
+        })
+    }
+
+    private fun showMarkets() {
+        progressBarDialog.dismiss()
+        println("Markets : here : ${markets.size}")
+        marketsAdapter.setItems(markets)
+    }
+
+    private fun adjustClickingOnGroup(group: Group) {
+        println("Clicking on group")
+    }
+
+    private fun updatePageTitle() {
+        pageTitle.text = getString(R.string.markets_in, currentSelectingItem.title)
     }
 }

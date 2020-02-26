@@ -14,4 +14,5 @@
     <string name="try_to_restart_application">Try to restart application</string>
     <string name="restart_app_and_login">Restart application and login with success</string>
     <string name="city">City</string>
+    <string name="markets_in">Markets in %1$s</string>
 </resources>
