@@ -20,4 +20,8 @@
         <item name="android:background">@drawable/rounded_dialog</item>
         <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>
     </style>
+
+    <style name="Theme.ToolbarTheme" parent="android:Widget.Toolbar">
+        <item name="android:homeAsUpIndicator">@drawable/ic_arrow_back</item>
+    </style>
 </resources>

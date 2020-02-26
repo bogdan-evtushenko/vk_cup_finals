@@ -15,4 +15,6 @@
     <string name="restart_app_and_login">Restart application and login with success</string>
     <string name="city">City</string>
     <string name="markets_in">Markets in %1$s</string>
+    <string name="x_group_products">%1$s group products</string>
+    <string name="nothing_found">Nothing found</string>
 </resources>

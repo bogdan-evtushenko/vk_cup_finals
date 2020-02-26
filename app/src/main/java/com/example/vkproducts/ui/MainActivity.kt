@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
 
         if (!VK.isLoggedIn()) {
-            VK.login(this, arrayListOf(VKScope.WALL, VKScope.PHOTOS))
+            VK.login(this, arrayListOf(VKScope.WALL, VKScope.PHOTOS, VKScope.MARKET))
         } else {
             fetchCountries()
         }
@@ -124,7 +124,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showBottomSheetDialog() {
-        val bottomSheet = ShareBottomSheetDialog(::fetchMarkets, citiesListItems, currentSelectingItem)
+        val bottomSheet = CitiesBottomSheetDialog(::fetchMarkets, citiesListItems, currentSelectingItem)
         bottomSheet.show(
             supportFragmentManager, "shareBottomSheet"
         )
@@ -165,7 +165,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun adjustClickingOnGroup(group: Group) {
-        println("Clicking on group")
+        startActivity(MarketActivity.newIntent(this, group.id, group.name))
     }
 
     private fun updatePageTitle() {

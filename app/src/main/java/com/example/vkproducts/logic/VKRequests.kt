@@ -7,19 +7,19 @@ import java.lang.IllegalStateException
 object VKRequests {
 
     class FetchCategories :
-        VKRequest<List<Category>>("groups.getCatalogInfo") {
+        VKRequest<List<Product>>("groups.getCatalogInfo") {
         init {
             addParam("access_token", user?.accessToken)
             addParam("v", "5.103")
         }
 
-        override fun parse(r: JSONObject): List<Category> {
+        override fun parse(r: JSONObject): List<Product> {
             val response = r.getJSONObject("response")
             val categories = response.getJSONArray("categories")
-            val result = ArrayList<Category>()
+            val result = ArrayList<Product>()
 
             for (i in 0 until categories.length()) {
-                result.add(Category.parse(categories.getJSONObject(i)))
+                result.add(Product.parse(categories.getJSONObject(i)))
             }
 
             return result
@@ -109,7 +109,7 @@ object VKRequests {
         init {
             addParam("q", "*")
             addParam("city_id", cityId)
-            addParam("sort", 2)
+            addParam("sort", 0)
             addParam("count", 1000)
             addParam("market", 1)
             addParam("access_token", user?.accessToken)
@@ -125,6 +125,28 @@ object VKRequests {
                 result.add(Group.parse(groups.getJSONObject(i)))
             }
             return result
+        }
+    }
+
+    class FetchProducts(marketId: Int) :
+        VKRequest<Pair<Int, List<Product>>>("market.get") {
+        init {
+            addParam("owner_id", "-$marketId")
+            addParam("count", 200)
+            addParam("extended", 1)
+            addParam("access_token", user?.accessToken)
+            addParam("v", "5.103")
+        }
+
+        override fun parse(r: JSONObject): Pair<Int, List<Product>> {
+            val response = r.getJSONObject("response")
+            val products = response.getJSONArray("items")
+            val result = ArrayList<Product>()
+
+            for (i in 0 until products.length()) {
+                result.add(Product.parse(products.getJSONObject(i)))
+            }
+            return Pair(response.getInt("count"), result)
         }
     }
 }

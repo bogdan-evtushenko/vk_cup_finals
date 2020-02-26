@@ -15,7 +15,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.android.synthetic.main.bottom_sheet_layout.view.*
 
-class ShareBottomSheetDialog(
+class CitiesBottomSheetDialog(
     private val onCancelListener: (CitiesListItem) -> Unit,
     private val cities: List<CitiesListItem>,
     private var currentSelectingItem: CitiesListItem
