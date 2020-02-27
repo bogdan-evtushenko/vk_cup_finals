@@ -1,4 +1,4 @@
-package com.example.vkproducts.ui
+package com.example.vkproducts.ui.products
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -12,7 +12,6 @@ import com.bumptech.glide.Glide
 import com.example.vkproducts.R
 import com.example.vkproducts.logic.Product
 import kotlinx.android.synthetic.main.view_product_item.view.*
-import java.text.DecimalFormat
 
 class ProductsAdapter(
     private val context: Context,

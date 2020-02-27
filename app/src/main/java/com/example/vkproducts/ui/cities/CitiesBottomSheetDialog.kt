@@ -1,4 +1,4 @@
-package com.example.vkproducts.ui
+package com.example.vkproducts.ui.cities
 
 import android.content.DialogInterface
 import android.os.Bundle

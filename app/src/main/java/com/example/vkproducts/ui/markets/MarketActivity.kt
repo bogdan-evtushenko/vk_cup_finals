@@ -1,5 +1,6 @@
-package com.example.vkproducts.ui
+package com.example.vkproducts.ui.markets
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -9,10 +10,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vkproducts.R
-import com.example.vkproducts.logic.Product
-import com.example.vkproducts.logic.VKRequests
-import com.example.vkproducts.logic.marketId
-import com.example.vkproducts.logic.marketTitle
+import com.example.vkproducts.logic.*
+import com.example.vkproducts.ui.products.ProductActivity
+import com.example.vkproducts.ui.products.ProductsAdapter
+import com.example.vkproducts.ui.ProgressBarDialog
 import com.vk.api.sdk.VK
 import com.vk.api.sdk.VKApiCallback
 import com.vk.api.sdk.exceptions.VKApiExecutionException
@@ -28,7 +29,13 @@ class MarketActivity : AppCompatActivity() {
 
     private val progressBarDialog by lazy { ProgressBarDialog(this) }
     private val products: MutableList<Product> = mutableListOf()
-    private val productsAdapter by lazy { ProductsAdapter(this, ::adjustClickingOnProduct, products) }
+    private val productsAdapter by lazy {
+        ProductsAdapter(
+            this,
+            ::adjustClickingOnProduct,
+            products
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,7 +57,6 @@ class MarketActivity : AppCompatActivity() {
 
     private fun fetchProducts() {
         progressBarDialog.show()
-        println("here owner_id : $marketId")
         VK.execute(VKRequests.FetchProducts(marketId), object : VKApiCallback<Pair<Int, List<Product>>> {
             override fun success(result: Pair<Int, List<Product>>) {
                 products.addAll(result.second)
@@ -110,7 +116,25 @@ class MarketActivity : AppCompatActivity() {
     }
 
     private fun adjustClickingOnProduct(product: Product) {
-        startActivity(ProductActivity.newIntent(this, product))
+        startActivityForResult(
+            ProductActivity.newIntent(
+                this,
+                product,
+                marketId
+            ), REQUEST_CODE_PRODUCT
+        )
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                REQUEST_CODE_PRODUCT -> {
+                    val resultProduct = data?.extras?.product ?: throw IllegalStateException()
+                    products.find { resultProduct.id == it.id }?.isFavorite = resultProduct.isFavorite
+                }
+            }
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -128,5 +152,8 @@ class MarketActivity : AppCompatActivity() {
                     this.marketTitle = marketTitle
                 })
             }
+
+        const val REQUEST_CODE_PRODUCT = 2
     }
+
 }

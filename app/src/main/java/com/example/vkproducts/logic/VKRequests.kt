@@ -75,6 +75,7 @@ object VKRequests {
     class FetchProducts(marketId: Int, offset: Int = 0) :
         VKRequest<Pair<Int, List<Product>>>("market.get") {
         init {
+            println("Here fields : $marketId, and token ${user?.accessToken} ")
             addParam("owner_id", "-$marketId")
             addParam("count", 200)
             addParam("offer", offset)
@@ -92,6 +93,34 @@ object VKRequests {
                 result.add(Product.parse(products.getJSONObject(i)))
             }
             return Pair(response.getInt("count"), result)
+        }
+    }
+
+    class AddProductToFavorite(productId: Int, marketId: Int) :
+        VKRequest<Boolean>("fave.addProduct") {
+        init {
+            addParam("id", productId)
+            addParam("owner_id", "-$marketId")
+            addParam("access_token", user?.accessToken)
+            addParam("v", "5.103")
+        }
+
+        override fun parse(r: JSONObject): Boolean {
+            return (r.getInt("response") == 1)
+        }
+    }
+
+    class RemoveProductFromFavorite(productId: Int, marketId: Int) :
+        VKRequest<Boolean>("fave.removeProduct") {
+        init {
+            addParam("id", productId)
+            addParam("owner_id", -marketId)
+            addParam("access_token", user?.accessToken)
+            addParam("v", "5.103")
+        }
+
+        override fun parse(r: JSONObject): Boolean {
+            return (r.getInt("response") == 1)
         }
     }
 }

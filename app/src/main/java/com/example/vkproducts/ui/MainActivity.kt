@@ -7,8 +7,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.vkproducts.R
 import com.example.vkproducts.logic.*
+import com.example.vkproducts.ui.cities.CitiesBottomSheetDialog
+import com.example.vkproducts.ui.markets.MarketActivity
+import com.example.vkproducts.ui.markets.MarketsAdapter
 import com.vk.api.sdk.VK
 import com.vk.api.sdk.VKApiCallback
+import com.vk.api.sdk.VKApiConfig
+import com.vk.api.sdk.VKDefaultValidationHandler
 import com.vk.api.sdk.auth.VKAccessToken
 import com.vk.api.sdk.auth.VKAuthCallback
 import com.vk.api.sdk.auth.VKScope
@@ -22,7 +27,12 @@ class MainActivity : AppCompatActivity() {
     private lateinit var currentSelectingItem: CitiesListItem
     private val markets: MutableList<Group> = mutableListOf()
 
-    private val marketsAdapter by lazy { MarketsAdapter(this, ::adjustClickingOnGroup) }
+    private val marketsAdapter by lazy {
+        MarketsAdapter(
+            this,
+            ::adjustClickingOnGroup
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,16 +40,27 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
 
         if (!VK.isLoggedIn()) {
-            VK.login(this, arrayListOf(VKScope.WALL, VKScope.PHOTOS, VKScope.MARKET))
+            VK.login(this, arrayListOf(VKScope.WALL, VKScope.PHOTOS, VKScope.MARKET, VKScope.GROUPS))
         } else {
             fetchCountries()
         }
+
+        VK.setConfig(
+            VKApiConfig(
+                context = this,
+                appId = resources.getInteger(R.integer.com_vk_sdk_AppId),
+                validationHandler = VKDefaultValidationHandler(this),
+                version = "5.103"
+            )
+        )
 
         initViews()
     }
 
     private fun initViews() {
-        titleContainer.setOnClickListener { showBottomSheetDialog() }
+        titleContainer.setOnClickListener {
+            showBottomSheetDialog()
+        }
         recyclerView.run {
             layoutManager = LinearLayoutManager(this@MainActivity, LinearLayoutManager.VERTICAL, false)
             adapter = marketsAdapter
@@ -66,18 +87,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        if (user != null) {
-            fetchCountries()
-        }
-    }
-
     private fun fetchCountries() {
         progressBarDialog.show()
         VK.execute(VKRequests.FetchCountries(), object : VKApiCallback<List<Country>> {
             override fun success(result: List<Country>) {
-                println("here $result")
                 fetchCities(result)
             }
 
@@ -119,17 +132,20 @@ class MainActivity : AppCompatActivity() {
         println("Here size ${citiesListItems.size}")
         currentSelectingItem = citiesListItems[1]
         updatePageTitle()
-        showBottomSheetDialog()
+        fetchMarkets(currentSelectingItem)
     }
 
     private fun showBottomSheetDialog() {
-        val bottomSheet = CitiesBottomSheetDialog(::fetchMarkets, citiesListItems, currentSelectingItem)
+        val bottomSheet = CitiesBottomSheetDialog(
+            ::fetchMarkets,
+            citiesListItems,
+            currentSelectingItem
+        )
         bottomSheet.show(supportFragmentManager, "shareBottomSheet")
     }
 
     private fun fetchMarkets(cityItem: CitiesListItem) {
         currentSelectingItem = cityItem
-        // println("Here cityItem : $cityItem")
         updatePageTitle()
         markets.clear()
         uploadMarkets(cityItem.id)
@@ -141,10 +157,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun uploadMarketOneByOne(cityId: Int) {
-        println("Upload market one by one")
         VK.execute(VKRequests.SearchGroupsByCity(cityId), object : VKApiCallback<List<Group>> {
             override fun success(result: List<Group>) {
-                //println("Here result groups : $result")
                 markets.addAll(result)
                 showMarkets()
             }
@@ -157,7 +171,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun showMarkets() {
         progressBarDialog.dismiss()
-        println("Markets : here : ${markets.size}")
         marketsAdapter.setItems(markets)
     }
 

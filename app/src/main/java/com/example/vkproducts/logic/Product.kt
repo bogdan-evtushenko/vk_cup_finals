@@ -11,7 +11,7 @@ data class Product(
     val description: String,
     val amount: Int,
     val currency: String,
-    val isFavorite: Boolean,
+    var isFavorite: Boolean,
     val photoUrl: String
 ) : Serializable {
 

@@ -1,4 +1,4 @@
-package com.example.vkproducts.ui
+package com.example.vkproducts.ui.markets
 
 import android.content.Context
 import android.view.LayoutInflater

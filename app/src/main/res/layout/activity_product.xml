@@ -27,7 +27,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
+                android:layout_marginEnd="8dp"
+                android:ellipsize="end"
                 android:fontFamily="sans-serif-medium"
+                android:singleLine="true"
                 android:textColor="@color/mine_shaft"
                 android:textSize="24sp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -137,10 +140,10 @@
             android:id="@+id/btnAddToFavorite"
             android:layout_width="match_parent"
             android:layout_height="44dp"
-            android:background="@drawable/button_blue_ripple_rounded"
+            android:background="@drawable/button_gray_ripple_rounded"
             android:text="@string/add_to_favorites"
             android:textAllCaps="false"
-            android:textColor="@color/white"
+            android:textColor="@color/blue"
             android:textSize="16sp" />
     </RelativeLayout>
 

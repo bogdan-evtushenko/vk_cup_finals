@@ -1,4 +1,4 @@
-package com.example.vkproducts.ui
+package com.example.vkproducts.ui.cities
 
 import android.content.Context
 import android.graphics.Typeface
@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vkproducts.R
 import com.example.vkproducts.logic.CitiesListItem
