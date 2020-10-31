@@ -123,7 +123,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/btnContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -138,14 +138,28 @@
 
         <Button
             android:id="@+id/btnAddToFavorite"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="44dp"
+            android:layout_marginEnd="4dp"
+            android:layout_weight="1"
             android:background="@drawable/button_gray_ripple_rounded"
             android:text="@string/add_to_favorites"
             android:textAllCaps="false"
             android:textColor="@color/blue"
             android:textSize="16sp" />
-    </RelativeLayout>
+
+        <Button
+            android:id="@+id/btnShareWithFriends"
+            android:layout_width="wrap_content"
+            android:layout_height="44dp"
+            android:layout_marginStart="4dp"
+            android:layout_weight="1"
+            android:background="@drawable/button_red_ripple_rounded"
+            android:text="@string/share_with_friends"
+            android:textAllCaps="false"
+            android:textColor="@color/dull_gray"
+            android:textSize="16sp" />
+    </LinearLayout>
 
     <include
         layout="@layout/divider_view"

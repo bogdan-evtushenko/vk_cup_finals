@@ -48,10 +48,10 @@ object VKRequests {
         }
     }
 
-    class SearchGroupsByCity(cityId: Int) :
+    class SearchGroupsByCity(cityId: Int, query: String = "a") :
         VKRequest<List<Group>>("groups.search") {
         init {
-            addParam("q", "*")
+            addParam("q", query.ifEmpty { "a" })
             addParam("city_id", cityId)
             addParam("sort", 0)
             addParam("count", 1000)

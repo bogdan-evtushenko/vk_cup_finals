@@ -18,6 +18,7 @@ import com.vk.api.sdk.VK
 import com.vk.api.sdk.VKApiCallback
 import com.vk.api.sdk.exceptions.VKApiExecutionException
 import kotlinx.android.synthetic.main.activity_market.*
+import java.lang.Exception
 
 class MarketActivity : AppCompatActivity() {
 
@@ -64,7 +65,7 @@ class MarketActivity : AppCompatActivity() {
                 showProducts()
             }
 
-            override fun fail(error: VKApiExecutionException) {
+            override fun fail(error: Exception) {
                 println("error1 : ${error.message}")
                 showToast(error.message.orEmpty())
                 showProducts()
@@ -102,7 +103,7 @@ class MarketActivity : AppCompatActivity() {
                 spinner.visibility = View.GONE
             }
 
-            override fun fail(error: VKApiExecutionException) {
+            override fun fail(error: Exception) {
                 println("error in spinner : ${error.message}")
                 showToast(error.message.orEmpty())
             }
